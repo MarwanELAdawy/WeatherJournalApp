@@ -1,5 +1,5 @@
 /* Global Variables */
-const api_key = '96eb94c82cf7f5fcd82555c50c1b053a';
+const api_key = '&appid=96eb94c82cf7f5fcd82555c50c1b053a';
 const API_base = 'https://api.openweathermap.org/data/2.5/weather?zip=';
 
 //variables
@@ -56,9 +56,7 @@ const getWD = async(url = '', data = {})=>{
     const content = document.getElementById('feelings').value;
     fetchWeather(API_base, zip_code, api_key).then(function (userData) {
             postData('/add', { date: newDate, temp: userData[0].main.temp, content });
-    }).then(function (newData) {
-        UI();
-    });
+    }).then(function (newData) {UI();});
 };
 const UI = async(url = '', data = {}) => {
     const response = await fetch(url);
