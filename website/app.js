@@ -55,16 +55,16 @@ const getWD = async(url = '', data = {})=>{
     const zip_code = document.getElementById('zip').value;
     const content = document.getElementById('feelings').value;
     fetchWeather(API_base, zip_code, api_key).then(function (userData) {
-            postData('/add', { date: newDate, temp: userData.main.temp, content });
-    }).then(function (newData) {UI();});
+            postData('/projectData', { date: newDate, temp: (((userData.main.temp)-273.15).toFixed(1)), content });
+    }).then(function (newData) {UI('/projectData');});
 };
 const UI = async(url = '', data = {}) => {
     const response = await fetch(url);
     try {
         const newData = await response.json();
         dateEntry.innerHTML = newData.date;
-        tempEntry.innerHTML =  newData.temperature;
-        document.getElementById('content').innerHTML = allData.content;
+        tempEntry.innerHTML =  newData.temp;
+        document.getElementById('content').innerHTML = newData.content;
         //contentEntry.innerHTML = `<p>country ${newData.country}.</p> <p>feelings: ${newData.feelings}</p> <p>zipCode: ${newData.zipCode}</p>`;
         console.log('UI', newData);
     } catch (error) {
