@@ -55,7 +55,7 @@ const getWD = async(url = '', data = {})=>{
     const zip_code = document.getElementById('zip').value;
     const content = document.getElementById('feelings').value;
     fetchWeather(API_base, zip_code, api_key).then(function (userData) {
-            postData('/add', { date: newDate, temp: userData[0].main.temp, content });
+            postData('/add', { date: newDate, temp: userData.main.temp, content });
     }).then(function (newData) {UI();});
 };
 const UI = async(url = '', data = {}) => {
