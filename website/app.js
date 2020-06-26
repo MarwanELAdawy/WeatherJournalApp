@@ -14,11 +14,15 @@ const contentEntry = document.getElementById('content');
 
 console.log(zipCode.value, country.value, feelings.value);
 
-const fetchWeather = async (url)=>{
-    let response = await fetch(url);
+let d = new Date();
+let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
+
+const fetchWeather = async (baseURL, newZip, apiKey)=>{
+
+    const res = await fetch(baseURL + newZip + apiKey);
     try {
-      let data = await response.json();
-      return data;
+      const data = await res.json();
+        return data;
     } 
     catch (err) {
       console.log("Err:", err);
@@ -26,14 +30,17 @@ const fetchWeather = async (url)=>{
 };
 
 const postData = async (url = '', data = {}) =>{
-    console.log(data);
     const response = await fetch(url, {
         method: "POST",
         credentials: "same-origin",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+            date: data.date,
+            temp: data.temp,
+            content: data.content
+        })
     });
     try{
         const newData = await response.json();
@@ -47,28 +54,11 @@ const postData = async (url = '', data = {}) =>{
 const getWD = async(url = '', data = {})=>{
     const zip_code = document.getElementById('zip').value;
     const content = document.getElementById('feelings').value;
-    const countryCode = `${(country.value).toLowerCase()}`;
-    const resopnse = `${API_base}${zip_code}&APPID=${api_key}`;
-    if (zip_code.length === 0 || feelings.length === 0) {
-        alert("Please fill up all values !");
-        return;
-    }
-    try{
-        let temp = await fetchWeather(resopnse).main.temp;
-        // Create a new date instance dynamically with JS
-        let d = new Date();
-        let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
-        const newD = {
-            date: newDate,
-            temp: temp,
-            content: content
-        };
-        await postData('/projectData',newD);
+    fetchWeather(API_base, zip_code, api_key).then(function (userData) {
+            postData('/add', { date: newDate, temp: userData[0].main.temp, content });
+    }).then(function (newData) {
         UI();
-    }
-    catch(error){
-        console.log("error", error);
-    }
+    });
 };
 const UI = async(url = '', data = {}) => {
     const response = await fetch(url);
@@ -76,7 +66,8 @@ const UI = async(url = '', data = {}) => {
         const newData = await response.json();
         dateEntry.innerHTML = newData.date;
         tempEntry.innerHTML =  newData.temperature;
-        contentEntry.innerHTML = `<p>country ${newData.country}.</p> <p>feelings: ${newData.feelings}</p> <p>zipCode: ${newData.zipCode}</p>`;
+        document.getElementById('content').innerHTML = allData.content;
+        //contentEntry.innerHTML = `<p>country ${newData.country}.</p> <p>feelings: ${newData.feelings}</p> <p>zipCode: ${newData.zipCode}</p>`;
         console.log('UI', newData);
     } catch (error) {
         console.log("error", error);
