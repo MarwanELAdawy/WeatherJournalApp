@@ -64,7 +64,7 @@ const UI = async(url = '', data = {}) => {
         const newData = await response.json();
         dateEntry.innerHTML = newData.date;
         tempEntry.innerHTML =  newData.temp;
-        document.getElementById('content').innerHTML = newData.content;
+        document.getElementById('feelings').innerHTML = newData.content;
         //contentEntry.innerHTML = `<p>country ${newData.country}.</p> <p>feelings: ${newData.feelings}</p> <p>zipCode: ${newData.zipCode}</p>`;
         console.log('UI', newData);
     } catch (error) {
